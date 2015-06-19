@@ -32,4 +32,4 @@
       INTEGER CE
       COMMON /BHOUTPUT1/ M1presn, M2presn, Apresn, epresn
       COMMON /BHOUTPUT2/ M1postsn, M2postsn, Apostsn, epostsn
-      COMMON /BHOUTPUT3/ Vkick, Vsystem, CE, Tsn
+      COMMON /BHOUTPUT3/ Vkick, Vsystem, Tsn, CE

@@ -94,12 +94,12 @@
 *
 * Open the input file - list of binary initial parameters. 
 *
-      OPEN(10,file='binariesNS.in',status='unknown')
+      OPEN(10,file='binariesBH1e6.in',status='unknown')
       READ(10,*)nm1
 *
 * Open the output files. 
 *
-      OPEN(11,file='binariesNS.out',status='unknown')
+      OPEN(11,file='binariesBH1e6.out',status='unknown')
 *
       do i = 1,nm1
 *
