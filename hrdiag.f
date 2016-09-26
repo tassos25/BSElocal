@@ -46,7 +46,7 @@
       real*8 rzamsf,rtmsf,ralphf,rbetaf,rgammf,rhookf
       real*8 rgbf,rminf,ragbf,rzahbf,rzhef,rhehgf,rhegbf,rpertf
       real*8 mctmsf,mcgbtf,mcgbf,mcheif,mcagbf,lzahbf
-      real*8 mrembar, mfb, fb, a1, b1
+      real*8 mrembar, mfb, fb, a1, b1, a2, b2
       external thookf,tblf
       external lalphf,lbetaf,lnetaf,lhookf,lgbtf,lmcgbf,lzhef,lpertf
       external rzamsf,rtmsf,ralphf,rbetaf,rgammf,rhookf
@@ -529,7 +529,7 @@
 
 								mrembar = mcx+mfb
 								if(mrembar.le.mxns)then
-										mt = (-1.0d0+sqrt(1.0d0+4.d0*0.075d0*mrembar))/(2.0d0*0.075d0)
+										mt = (-1.0d0+sqrt(1.0d0-4.d0*0.075d0*(-1.d0*mrembar)))/(2.0d0*0.075d0)
 										kw = 13
 								elseif(mt.gt.mxns)then
 										mt = 0.90d0*mrembar
@@ -550,13 +550,51 @@
 								elseif(mc.lt.7.0d0)then
 									mfb = mt0-mcx
 								elseif(mc.lt.11.0d0)then
-									a1 = 0.25d0-(1.275d0/mt0 - mcx)
+									a1 = 0.25d0-(1.275d0/(mt0 - mcx))
 									b1 = -11.d0*a1+1.d0
 									fb = a1*mc+b1
 									mfb = fb*(mt0-mcx)
-									write(*,*) '!!!',mfb, a1, b1, mt0, mt, mcx, mc, fb
+*									write(*,*) '!!!',mfb, a1, b1, mt0, mt, mcx, mc, fb
 								elseif(mc.ge.11.0d0)then
 									mfb = mt0-mcx
+								endif
+
+								mrembar = mcx+mfb
+								if(mrembar.le.mxns)then
+										mt = (-1.0d0+sqrt(1.0d0-4.d0*0.075d0*(-1.d0*mrembar)))/(2.0d0*0.075d0)
+										kw = 13
+								elseif(mt.gt.mxns)then
+										mt = 0.90d0*mrembar
+										kw = 14
+								endif
+								mc = mt
+							elseif(nsflag.eq.4)then
+*
+* Use NS/BH mass given by Fryer et. al. 2012, ApJ, 749, 91 to calculate initial mt
+* using the Delayed supernova prescription.
+*											
+								if(mc.lt.3.50d0)then
+									mcx = 1.20d0
+								elseif(mc.lt.6.0d0)then
+									mcx = 1.3d0
+								elseif(mc.lt.11.0d0)then
+									mcx = 1.4
+								elseif(mc.ge.11.0d0)then
+									mcx = 1.6
+								endif
+								
+								if(mc.lt.2.5d0)then
+									mfb = 0.2d0
+								elseif(mc.lt.3.5d0)then
+									mfb = 0.5d0*mc-1.05d0
+								elseif(mc.lt.11.d0)then
+									a2  = 0.133d0-(0.093d0/(mt0 - mcx))
+									b2  = -11.d0*a2+1.d0
+									fb  = a2*mc+b2
+									mfb = fb*(mt0-mcx)
+								elseif(mc.ge.11.d0)then
+									fb = 1.0d0  
+									mfb = fb*(mt0-mcx)
 								endif
 
 								mrembar = mcx+mfb
@@ -567,7 +605,7 @@
 										mt = 0.90d0*mrembar
 										kw = 14
 								endif
-								mc = mt
+								mc = mt									
 
 							endif
 						
@@ -701,7 +739,7 @@
 
 								mrembar = mcx+mfb
 								if(mrembar.le.mxns)then
-										mt = (-1.0d0+sqrt(1.0d0+4.d0*0.075d0*mrembar))/(2.0d0*0.075d0)
+										mt = (-1.0d0+sqrt(1.0d0-4.d0*0.075d0*(-1.d0*mrembar)))/(2.0d0*0.075d0)
 										kw = 13
 								elseif(mt.gt.mxns)then
 										mt = 0.90d0*mrembar
@@ -722,7 +760,7 @@
 								elseif(mc.lt.7.0d0)then
 									mfb = mt0-mcx
 								elseif(mc.lt.11.0d0)then
-									a1 = 0.25d0-(1.275d0/mt0 - mcx)
+									a1 = 0.25d0-(1.275d0/(mt0 - mcx))
 									b1 = -11.d0*a1+1.d0
 									fb = a1*mc+b1
 									mfb = fb*(mt0-mcx)
@@ -731,15 +769,52 @@
 								endif
 								
 								mrembar = mcx+mfb
-								write(*,*) mfb, mcx, mc, mt0, mrembar
+*								write(*,*) mfb, mcx, mc, mt0, mrembar
 								if(mrembar.le.mxns)then
-										mt = (-1.0d0+sqrt(1.0d0+4.d0*0.075d0*mrembar))/(2.0d0*0.075d0)
+										mt = (-1.0d0+sqrt(1.0d0-4.d0*0.075d0*(-1.d0*mrembar)))/(2.0d0*0.075d0)
 										kw = 13
 								elseif(mt.gt.mxns)then
 										mt = 0.90d0*mrembar
 										kw = 14
 								endif
 								mc = mt
+							elseif(nsflag.eq.4)then
+*
+* Use NS/BH mass given by Fryer et. al. 2012, ApJ, 749, 91 to calculate initial mt
+* using the Delayed supernova prescription.
+*											
+								if(mc.lt.3.50d0)then
+									mcx = 1.20d0
+								elseif(mc.lt.6.0d0)then
+									mcx = 1.3d0
+								elseif(mc.lt.11.0d0)then
+									mcx = 1.4
+								elseif(mc.ge.11.0d0)then
+									mcx = 1.6
+								endif
+								if(mc.lt.2.5d0)then
+									mfb = 0.2d0
+								elseif(mc.lt.3.5d0)then
+									mfb = 0.5d0*mc-1.05d0
+								elseif(mc.lt.11.d0)then
+									a2  = 0.133d0-(0.093d0/(mt0 - mcx))
+									b2  = -11.d0*a2+1.d0
+									fb  = a2*mc+b2
+									mfb = fb*(mt0-mcx)
+								elseif(mc.ge.11.d0)then
+									fb = 1.0d0  
+									mfb = fb*(mt0-mcx)
+								endif
+
+								mrembar = mcx+mfb
+								if(mrembar.le.mxns)then
+										mt = (-1.0d0+sqrt(1.0d0-4.d0*0.075d0*(-1.d0*mrembar)))/(2.0d0*0.075d0)
+										kw = 13
+								elseif(mt.gt.mxns)then
+										mt = 0.90d0*mrembar
+										kw = 14
+								endif
+								mc = mt	
 
 							endif
                   endif  
